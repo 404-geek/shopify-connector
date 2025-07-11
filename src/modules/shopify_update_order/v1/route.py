@@ -21,6 +21,7 @@ def content():
 
         shop_domain = form_data.get("shop_domain")
         access_token = form_data.get("access_token")
+        selected_order = form_data.get("order", {}).get("id")
 
         if isinstance(content_object_names, list) and content_object_names and isinstance(content_object_names[0], dict):
             content_object_names = [obj.get("id") for obj in content_object_names if "id" in obj]
@@ -52,7 +53,26 @@ def content():
                 "data": order_choices
             })
 
+        if "fulfillment_orders" in content_object_names and selected_order:
+
+            url = (f"https://{shop_domain}/admin/api/2023-10/orders/{selected_order}/fulfillment_orders.json")
+
+            resp = requests.get(url, headers=headers)
+            f_orders = resp.json().get("fulfillment_orders", [])
+            fulfillment_choices = [
+                {
+                    "value": { "id": str(f["id"]), "label": f"{f['id']}" },
+                    "label": f"{f['id']}"
+                }
+                for f in f_orders
+            ]
+            content_objects.append({
+                "content_object_name": "fulfillment_orders",
+                "data": fulfillment_choices
+            })
+
         return Response(data={"content_objects": content_objects})
+
 
     except Exception as e:
         return Response.error(str(e))
@@ -80,6 +100,8 @@ def execute():
         order = data.get("order", {})
         order_id = order.get("id")
 
+        print(update_action)
+
         if update_action == "cancel_order":
             if not order_id:
                 return Response.error("Order ID is required for cancelling the order.")
@@ -95,6 +117,7 @@ def execute():
 
         elif update_action == "cancel_fulfillment":
             fulfillment_order_id = data.get("fulfillment_order_id")
+            print(fulfillment_order_id)
             if not fulfillment_order_id:
                 return Response.error("Fulfillment Order ID is required for cancelling fulfillment.")
 

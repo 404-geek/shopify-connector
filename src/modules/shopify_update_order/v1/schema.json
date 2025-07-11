@@ -41,6 +41,9 @@
             "id": "orders"
           }
         ]
+      },
+      "on_action": {
+        "load_schema": true
       }
     },
     {
@@ -72,23 +75,116 @@
     },
     {
       "id": "fulfillment_order_id",
-      "type": "string",
-      "label": "Fulfillment Order ID (only required for fulfillment actions)",
-      "description": "You can find this in the Shopify order's fulfillment section"
+      "type": "object",
+      "label": "Select Fulfillment Order ID",
+      "ui_options": {
+        "ui_widget": "SelectWidget"
+      },
+      "choices": {
+        "values": []
+      },
+      "content": {
+        "type": ["managed"],
+        "content_objects": [
+          {
+            "id": "fulfillment_orders",
+            "content_object_depends_on_fields": [
+              {
+                "id": "order"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "hold_reason",
       "type": "string",
-      "label": "Hold Reason (only required for 'Put On Hold')",
-      "description": "E.g. 'other', 'inventory', 'address', etc."
+      "label": "Hold Reason (only for hold status)",
+      "description": "E.g. 'other', 'inventory', 'address'",
+      "validation": {
+        "required": false,
+        "min_length": 3,
+        "max_length": 50
+      }
     },
     {
       "id": "reason_notes",
       "type": "string",
       "label": "Hold Reason Notes (optional)",
-      "description": "Explain why the fulfillment is on hold"
+      "description": "Explain why the fulfillment is on hold",
+      "validation": {
+        "min_length": 5,
+        "max_length": 200
+      },
+      "ui_options": {
+        "ui_widget": "textarea"
+      }
+    }
+
+  ],
+
+  "rules": [
+    {
+      "if": {
+        "and": [
+          {
+            "id": "update_action",
+            "operator": "equal",
+            "value": "put_on_hold"
+          }
+        ]
+      },
+      "then": {
+        "fields": [
+          {
+            "id": "hold_reason",
+            "ui_options": {
+              "ui_widget": "input"
+            },
+            "apply_as": "merge"
+          },
+          {
+            "id": "reason_notes",
+            "ui_options": {
+              "ui_widget": "textarea"
+            },
+            "apply_as": "merge"
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "and": [
+          {
+            "id": "update_action",
+            "operator": "not_equal",
+            "value": "put_on_hold"
+          }
+        ]
+      },
+      "then": {
+        "fields": [
+          {
+            "id": "hold_reason",
+            "ui_options": {
+              "ui_widget": "hidden"
+            },
+            "apply_as": "merge"
+          },
+          {
+            "id": "reason_notes",
+            "ui_options": {
+              "ui_widget": "hidden"
+            },
+            "apply_as": "merge"
+          }
+        ]
+      }
     }
   ],
+
   "ui_options": {
     "ui_order": [
       "shop_domain",

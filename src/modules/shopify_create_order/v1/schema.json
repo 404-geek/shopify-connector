@@ -24,16 +24,61 @@
     {
       "id": "customer_email",
       "type": "string",
-      "label": "Customer Email"
+      "label": "Customer Email",
+      "description": "Email of the customer placing the order",
+      "validation": {
+        "required": true,
+        "pattern": "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$"
+      }
+    },
+    {
+      "id": "shipping_address",
+      "type": "object",
+      "label": "Shipping Address",
+      "fields": [
+        {
+          "id": "name",
+          "type": "string",
+          "label": "Full Name",
+          "validation": { "required": true }
+        },
+        {
+          "id": "address1",
+          "type": "string",
+          "label": "Address Line 1",
+          "validation": { "required": true }
+        },
+        {
+          "id": "city",
+          "type": "string",
+          "label": "City",
+          "validation": { "required": true }
+        },
+        {
+          "id": "country",
+          "type": "string",
+          "label": "Country",
+          "validation": { "required": true }
+        },
+        {
+          "id": "zip",
+          "type": "string",
+          "label": "Zip Code",
+          "validation": { "required": true }
+        }
+      ]
     },
     {
       "id": "line_items",
       "type": "string",
-      "label": "Line Items JSON",
-      "description": "Paste a JSON array of line items like: [{\"variant_id\": \"123\", \"quantity\": 2}]",
+      "label": "Product Items list JSON",
+      "description": "Paste a JSON array of products list to be placed for this order: [{\"variant_id\": \"123\", \"quantity\": 2}]",
+      "default" : "[{\"variant_id\": \"51471050801441\", \"quantity\": 2}, {\"variant_id\": \"51471051555105\", \"quantity\": 1}]",
       "ui_options": {
-        "ui_widget": "textarea",
-        "placeholder": "[{\"variant_id\": \"51471050801441\", \"quantity\": 2}, {\"variant_id\": \"51471051555105\", \"quantity\": 1}]"
+        "ui_widget": "CodeblockWidget",
+        "ui_options": {
+          "language": "json"
+        }
       },
       "validation": {
         "required": true
