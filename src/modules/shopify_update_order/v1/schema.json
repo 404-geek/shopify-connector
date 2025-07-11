@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "workflows_module_schema_version": "1.0.0"
+  },
+  "fields": [
+    {
+      "id": "shop_domain",
+      "type": "string",
+      "label": "Shopify Store Domain",
+      "description": "e.g. mystore.myshopify.com",
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "access_token",
+      "type": "string",
+      "label": "Access Token",
+      "description": "Your Shopify Admin API access token",
+      "validation": {
+        "required": true
+      },
+      "ui_options": {
+        "ui_widget": "password"
+      }
+    },
+    {
+      "id": "order",
+      "type": "object",
+      "label": "Select Order",
+      "ui_options": {
+        "ui_widget": "SelectWidget"
+      },
+      "choices": {
+        "values": []
+      },
+      "content": {
+        "type": ["managed"],
+        "content_objects": [
+          {
+            "id": "orders"
+          }
+        ]
+      }
+    },
+    {
+      "id": "update_action",
+      "type": "string",
+      "label": "Order Update Action",
+      "ui_options": {
+        "ui_widget": "SelectWidget"
+      },
+      "choices": {
+        "values": [
+          {
+            "value": "cancel_order",
+            "label": "Cancel Order"
+          },
+          {
+            "value": "cancel_fulfillment",
+            "label": "Cancel Fulfillment Order"
+          },
+          {
+            "value": "put_on_hold",
+            "label": "Put Fulfillment Order On Hold"
+          }
+        ]
+      },
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "fulfillment_order_id",
+      "type": "string",
+      "label": "Fulfillment Order ID (only required for fulfillment actions)",
+      "description": "You can find this in the Shopify order's fulfillment section"
+    },
+    {
+      "id": "hold_reason",
+      "type": "string",
+      "label": "Hold Reason (only required for 'Put On Hold')",
+      "description": "E.g. 'other', 'inventory', 'address', etc."
+    },
+    {
+      "id": "reason_notes",
+      "type": "string",
+      "label": "Hold Reason Notes (optional)",
+      "description": "Explain why the fulfillment is on hold"
+    }
+  ],
+  "ui_options": {
+    "ui_order": [
+      "shop_domain",
+      "access_token",
+      "order",
+      "update_action",
+      "fulfillment_order_id",
+      "hold_reason",
+      "reason_notes"
+    ]
+  }
+}

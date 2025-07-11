@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "workflows_module_schema_version": "1.0.0"
+  },
+  "fields": [
+    {
+      "id": "shop_domain",
+      "type": "string",
+      "label": "Shopify Store Domain",
+      "description": "e.g. mystore.myshopify.com",
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "access_token",
+      "type": "string",
+      "label": "Access Token",
+      "description": "Your Shopify Admin API access token",
+      "validation": {
+        "required": true
+      },
+      "ui_options": {
+        "ui_widget": "password"
+      }
+    },
+    {
+      "id": "product",
+      "type": "object",
+      "label": "Select Product",
+      "ui_options": {
+        "ui_widget": "SelectWidget"
+      },
+      "choices": {
+        "values": []
+      },
+      "content": {
+        "type": ["managed"],
+        "content_objects": [
+          {
+            "id": "products"
+          }
+        ]
+      }
+    },
+    {
+      "id": "variant",
+      "type": "object",
+      "label": "Select Variant",
+      "ui_options": {
+        "ui_widget": "SelectWidget"
+      },
+      "choices": {
+        "values": []
+      },
+      "content": {
+        "type": ["managed"],
+        "content_objects": [
+          {
+            "id": "variants",
+            "content_object_depends_on_fields": [
+              {
+                "id": "product"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "new_price",
+      "type": "string",
+      "label": "New Price (e.g. 12.99)",
+      "validation": {
+        "required": true,
+        "pattern": "^\\d+(\\.\\d{1,2})?$"
+      }
+    }
+  ],
+  "ui_options": {
+    "ui_order": ["shop_domain", "access_token", "product", "variant", "new_price"]
+  }
+}

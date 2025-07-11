@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "workflows_module_schema_version": "1.0.0"
+  },
+  "fields": [
+    {
+      "id": "shop_domain",
+      "type": "string",
+      "label": "Shopify Store Domain",
+      "description": "e.g. mystore.myshopify.com",
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "access_token",
+      "type": "string",
+      "label": "Access Token",
+      "description": "Your Shopify Admin API access token",
+      "validation": {
+        "required": true
+      },
+      "ui_options": {
+        "ui_widget": "password"
+      }
+    },
+    {
+      "id": "limit",
+      "type": "integer",
+      "label": "Number of Orders to Fetch",
+      "default": 5
+    }
+  ],
+  "ui_options": {
+    "ui_order": ["shop_domain", "access_token", "limit"]
+  }
+}

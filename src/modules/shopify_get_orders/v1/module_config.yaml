@@ -1,0 +1,3 @@
+module_settings:
+  module_name: "Fetch Orders"
+  module_description: "Fetch Orders Module"
