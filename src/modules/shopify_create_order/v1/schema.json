@@ -1,10 +1,13 @@
 {
+  "metadata": {
+    "workflows_module_schema_version": "1.0.0"
+  },
   "fields": [
     {
       "id": "shop_domain",
       "type": "string",
-      "label": "Shopify Store Domain",
-      "description": "e.g. mystore.myshopify.com",
+      "label": "Shop Domain",
+      "description": "Your Shopify store domain (e.g., your-store.myshopify.com)",
       "validation": {
         "required": true
       }
@@ -12,23 +15,88 @@
     {
       "id": "access_token",
       "type": "string",
-      "label": "Access Token",
-      "description": "Your Shopify Admin API access token",
-      "validation": {
-        "required": true
-      },
+      "label": "Admin API Access Token",
+      "description": "Your Shopify Admin API access token.",
       "ui_options": {
         "ui_widget": "password"
+      },
+      "validation": {
+        "required": true
       }
     },
     {
-      "id": "customer_email",
+      "id": "order_type",
       "type": "string",
-      "label": "Customer Email",
-      "description": "Email of the customer placing the order",
+      "label": "Order Type",
+      "description": "Select whether to create a draft or a complete order.",
+      "ui_options": {
+        "ui_widget": "SelectWidget"
+      },
+      "choices": {
+        "values": [
+          {
+            "value": "draft",
+            "label": "Draft Order"
+          },
+          {
+            "value": "complete",
+            "label": "Complete Order"
+          }
+        ]
+      },
       "validation": {
-        "required": true,
-        "pattern": "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$"
+        "required": true
+      }
+    },
+    {
+      "id": "customer",
+      "type": "object",
+      "label": "Customer",
+      "fields": [
+        {
+          "id": "first_name",
+          "type": "string",
+          "label": "First Name"
+        },
+        {
+          "id": "last_name",
+          "type": "string",
+          "label": "Last Name"
+        },
+        {
+          "id": "email",
+          "type": "string",
+          "label": "Email",
+          "format": "email",
+          "description": "Customer's email address. Required for both order types."
+        }
+      ]
+    },
+    {
+      "id": "line_items",
+      "type": "array",
+      "label": "Line Items",
+      "validation": {
+        "min_items": 1
+      },
+      "items": {
+        "type": "object",
+        "fields": [
+          {
+            "id": "variant_id",
+            "type": "string",
+            "label": "Variant ID",
+            "description": "The ID of the product variant."
+          },
+          {
+            "id": "quantity",
+            "type": "integer",
+            "label": "Quantity",
+            "validation": {
+              "minimum": 1
+            }
+          }
+        ]
       }
     },
     {
@@ -37,52 +105,126 @@
       "label": "Shipping Address",
       "fields": [
         {
-          "id": "name",
+          "id": "first_name",
           "type": "string",
-          "label": "Full Name",
-          "validation": { "required": true }
+          "label": "First Name"
+        },
+        {
+          "id": "last_name",
+          "type": "string",
+          "label": "Last Name"
         },
         {
           "id": "address1",
           "type": "string",
-          "label": "Address Line 1",
-          "validation": { "required": true }
+          "label": "Address 1"
         },
         {
           "id": "city",
           "type": "string",
-          "label": "City",
-          "validation": { "required": true }
+          "label": "City"
         },
         {
-          "id": "country",
+          "id": "province",
           "type": "string",
-          "label": "Country",
-          "validation": { "required": true }
+          "label": "Province/State"
         },
         {
           "id": "zip",
           "type": "string",
-          "label": "Zip Code",
-          "validation": { "required": true }
+          "label": "Postal/Zip Code"
+        },
+        {
+          "id": "country",
+          "type": "string",
+          "label": "Country"
         }
       ]
     },
     {
-      "id": "line_items",
-      "type": "string",
-      "label": "Product Items list JSON",
-      "description": "Paste a JSON array of products list to be placed for this order: [{\"variant_id\": \"123\", \"quantity\": 2}]",
-      "default" : "[{\"variant_id\": \"51471050801441\", \"quantity\": 2}, {\"variant_id\": \"51471051555105\", \"quantity\": 1}]",
-      "ui_options": {
-        "ui_widget": "CodeblockWidget",
-        "ui_options": {
-          "language": "json"
+      "id": "send_invoice",
+      "type": "boolean",
+      "label": "Send Invoice via Email",
+      "description": "If true, an invoice will be sent to the customer. (Draft Orders only)",
+      "default": false
+    },
+    {
+      "id": "applied_discount",
+      "type": "object",
+      "label": "Applied Discount",
+      "description": "Discount to apply to the draft order. (Draft Orders only)",
+      "fields": [
+        {
+          "id": "description",
+          "type": "string",
+          "label": "Description"
+        },
+        {
+          "id": "value",
+          "type": "string",
+          "label": "Value",
+          "description": "The value of the discount. Can be a fixed amount or a percentage."
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "label": "Title"
         }
+      ]
+    },
+    {
+      "id": "financial_status",
+      "type": "string",
+      "label": "Financial Status",
+      "description": "The financial status of the order. (Complete Orders only)",
+      "ui_options": {
+        "ui_widget": "SelectWidget"
       },
-      "validation": {
-        "required": true
+      "choices": {
+        "values": [
+          {
+            "value": "paid",
+            "label": "Paid"
+          },
+          {
+            "value": "pending",
+            "label": "Pending"
+          },
+          {
+            "value": "authorized",
+            "label": "Authorized"
+          }
+        ]
       }
+    },
+    {
+      "id": "currency",
+      "type": "string",
+      "label": "Currency",
+      "description": "The currency of the order (e.g., USD, CAD). (Complete Orders only)",
+      "default": "USD"
+    },
+    {
+      "id": "send_receipt",
+      "type": "boolean",
+      "label": "Send Receipt",
+      "description": "Whether to send an order receipt to the customer. (Complete Orders only)",
+      "default": false
     }
-  ]
+  ],
+  "ui_options": {
+    "ui_order": [
+      "shop_domain",
+      "access_token",
+      "order_type",
+      "customer",
+      "line_items",
+      "shipping_address",
+      "financial_status",
+      "currency",
+      "send_receipt",
+      "applied_discount",
+      "send_invoice"
+    ]
+  }
 }
